@@ -202,6 +202,16 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Force space in commentstring
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  desc = 'Force commentstring to include spaces',
+  -- group = ...,
+  callback = function(event)
+    local cs = vim.bo[event.buf].commentstring
+    vim.bo[event.buf].commentstring = cs:gsub('(%S)%%s', '%1 %%s'):gsub('%%s(%S)', '%%s %1')
+  end,
+})
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -399,7 +409,11 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            find_command = { 'fd', '--hidden', '--type', 'file', '--strip-cwd-prefix' },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -681,6 +695,7 @@ require('lazy').setup({
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
+    log_level = vim.log.levels.DEBUG,
     keys = {
       {
         '<leader>f',
@@ -716,6 +731,8 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'eslint_d', 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'eslint_d', 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
