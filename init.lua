@@ -90,6 +90,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
+-- Enable vim-matchup features
+vim.g.matchup_matchparen_enabled = 1
+vim.g.matchup_motion_enabled = 1
+vim.g.matchup_text_obj_enabled = 1
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -911,6 +916,13 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  { -- Add better matching support
+    'andymass/vim-matchup',
+    lazy = false,  -- Load immediately instead of on event
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = 'popup' }
+    end,
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -928,6 +940,11 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      matchup = {
+        enable = true, -- mandatory, false will disable the whole extension
+        disable = {}, -- optional, list of language that will be disabled
+        include_match_words = true, -- include match words from vim
+      },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
